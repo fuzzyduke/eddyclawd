@@ -1,0 +1,24 @@
+{
+  "name": "eddyclawd",
+  "version": "1.0.0",
+  "description": "Custom OpenClaw implementation for private VPS hosting",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "openclaw start",
+    "onboard": "openclaw onboard",
+    "gateway": "openclaw gateway",
+    "dashboard": "openclaw dashboard",
+    "build": "tsc"
+  },
+  "keywords": [
+    "openclaw",
+    "ai-agent",
+    "automation"
+  ],
+  "author": "eggy doge",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

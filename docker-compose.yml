@@ -1,0 +1,16 @@
+services:
+  openclaw:
+    image: openclaw/openclaw:latest
+    container_name: eddyclawd
+    restart: always
+    ports:
+      - "18789:18789"
+    volumes:
+      - ./src/skills:/app/src/skills
+      - openclaw_data:/root/.openclaw
+    environment:
+      - NODE_ENV=production
+      - OPENCLAW_PORT=18789
+
+volumes:
+  openclaw_data:

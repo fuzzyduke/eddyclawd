@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+dist/
+
+# Environment Variables
+.env
+.env.local
+
+# IDEs and Tools
+.vscode/
+.idea/
+*.log
+
+# System Files
+.DS_Store
+Thumbs.db
