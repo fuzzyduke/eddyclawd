@@ -1,6 +1,6 @@
 services:
   traefik:
-    image: traefik:v3.1
+    image: traefik:v2.11
     container_name: traefik
     restart: always
     security_opt:
@@ -18,7 +18,6 @@ services:
       - ./config:/etc/traefik/config
     environment:
       - TZ=UTC
-      - "DOCKER_API_VERSION=1.44"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.traefik.entrypoints=websecure"

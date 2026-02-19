@@ -14,3 +14,8 @@ dist/
 # System Files
 .DS_Store
 Thumbs.db
+.deploying
+
+# Infrastructure State
+infra/traefik/acme.json
+infra/traefik/config/
