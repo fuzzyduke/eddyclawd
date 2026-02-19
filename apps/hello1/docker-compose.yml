@@ -29,7 +29,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=proxy"
-      - "traefik.http.routers.hello1-router.rule=Host(`hello1.valhallala.com`)"
+      - "traefik.http.routers.hello1-router.rule=Host(\"hello1.valhallala.com\")"
       - "traefik.http.routers.hello1-router.entrypoints=websecure"
       - "traefik.http.routers.hello1-router.tls=true"
       - "traefik.http.routers.hello1-router.tls.certresolver=letsencrypt"
