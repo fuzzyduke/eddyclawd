@@ -8,31 +8,33 @@ APP_NAME=
 SUBDOMAIN=
 DOMAIN=valhallala.com
 INTERNAL_PORT=
+VPS_IP=167.86.84.248
+CLOUDFLARE_PROXY=ON
 PUBLIC_URL=https://<SUBDOMAIN>.<DOMAIN>
-SECRET_ENV_FILE=/srv/secrets/<APP_NAME>.env
+SECRET_SOURCE=bible:vps/<APP_NAME>.env
 ```
 
-## 🟩 Phase 1: Local Development
-- [ ] Folder created: `apps/<APP_NAME>/`
-- [ ] Docker image pinned (e.g., `image: name:1.2.3`)
-- [ ] Resource limits set (`mem_limit`, `cpus`)
-- [ ] Healthcheck implemented
-- [ ] `env_file` points to `/srv/secrets/<APP_NAME>.env`
-- [ ] Traefik labels correctly formatted with hardcoded Host rule
-- [ ] `apps/<APP_NAME>/APP.md` manifest filled out
+## 🟩 Phase 1: Local Development & Preflight
+- [ ] `scripts/new_app_scaffold.sh` executed
+- [ ] Image tag is pinned (PRACTICE: `image: <name>:<version>`)
+- [ ] Resource limits verified (`mem_limit`, `cpus`)
+- [ ] Healthcheck verified
+- [ ] `env_file` set to `/srv/secrets/<APP_NAME>.env`
+- [ ] Traefik Host rule uses **backticks**: `Host(\`<SUBDOMAIN>.<DOMAIN>\`)`
+- [ ] `docker compose config` passed locally
 
-## 🟦 Phase 2: Secrets & DNS
+## 🟦 Phase 2: Secrets & DNS (External)
 - [ ] Secret file added to private **bible** repo: `vps/<APP_NAME>.env`
-- [ ] Bible repo pushed to master
-- [ ] Cloudflare DNS record created for `<SUBDOMAIN>`
+- [ ] Bible repo pushed
+- [ ] Cloudflare A Record created and Proxied
 
 ## 🚀 Phase 3: Deployment
 - [ ] `git push origin master` (eddycontabovps)
-- [ ] GitHub Action "Deploy via SSH" completed successfully
+- [ ] GitHub Action summary shows success
 
 ## ✅ Definition of Done (DoD)
-- [ ] `docker ps` show container is `Up (healthy)`
-- [ ] `curl -I https://<SUBDOMAIN>.<DOMAIN>` returns `HTTP/2 200`
-- [ ] TLS certificate is valid (issued by Let's Encrypt)
-- [ ] Page content matches expectations
-- [ ] `/srv/secrets/<APP_NAME>.env` exists on VPS with `600` permissions
+- [ ] `docker ps` status: `Up (healthy)`
+- [ ] `docker inspect <container> | grep Host` shows correct backticked rule
+- [ ] Traefik logs show NO "Unable to obtain ACME certificate" errors for the host
+- [ ] `curl -I https://<SUBDOMAIN>.<DOMAIN>` returns `200`
+- [ ] `curl --resolve` (bypass CF) returns `200`

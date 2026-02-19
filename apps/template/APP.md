@@ -4,13 +4,13 @@
 - **App Name**: {{APP_NAME}}
 - **Domain**: {{SUBDOMAIN}}.valhallala.com
 - **Internal Port**: {{INTERNAL_PORT}}
-- **Docker Image**: {{IMAGE}}
+- **Docker Image**: {{IMAGE}} (PINNED)
 
 ## 🔒 Secrets
-- **Bible Path**: `vps/{{APP_NAME}}.env`
+- **Bible Source**: `vps/{{APP_NAME}}.env`
 - **VPS Runtime Path**: `/srv/secrets/{{APP_NAME}}.env`
 
 ## ✅ Verification
 - **Endpoint**: `https://{{SUBDOMAIN}}.valhallala.com`
-- **Healthy Status**: `200 OK`
-- **Key Fingerprint**: Found in response headers
+- **Expected Status**: `200 OK`
+- **Direct Audit**: `curl -skI --resolve {{SUBDOMAIN}}.valhallala.com:443:167.86.84.248 https://{{SUBDOMAIN}}.valhallala.com`

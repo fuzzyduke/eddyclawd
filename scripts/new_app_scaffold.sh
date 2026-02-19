@@ -1,5 +1,5 @@
 #!/bin/bash
-# Scaffolding helper for new Eddy VPS apps
+# Hardened Scaffolding helper for new Eddy VPS apps
 # Usage: ./scripts/new_app_scaffold.sh <APP_NAME> <SUBDOMAIN> <INTERNAL_PORT>
 
 if [ "$#" -ne 3 ]; then
@@ -18,25 +18,41 @@ if [ -d "$TARGET_DIR" ]; then
     exit 1
 fi
 
-echo "Scaffolding new app: $APP_NAME..."
+echo "Scaffolding NEW app: $APP_NAME (Target: $SUBDOMAIN.valhallala.com)..."
 
 # 1. Copy template
 cp -r "$TEMPLATE_DIR" "$TARGET_DIR"
 
-# 2. Replace placeholders in docker-compose.yml
-# Note: We use a simple sed replacement. For more complex cases, a proper template engine is better.
-sed -i "s/template-service/$APP_NAME-service/g" "$TARGET_DIR/docker-compose.yml"
-sed -i "s/Host(\`template.valhallala.com\`)/Host(\`$SUBDOMAIN.valhallala.com\`)/g" "$TARGET_DIR/docker-compose.yml"
-sed -i "s/loadbalancer.server.port=80/loadbalancer.server.port=$INTERNAL_PORT/g" "$TARGET_DIR/docker-compose.yml"
-sed -i "s/env_file: .env/env_file: \/srv\/secrets\/$APP_NAME.env/g" "$TARGET_DIR/docker-compose.yml"
+# 2. Replace placeholders systematically
+# Using | as delimiter for sed to avoid escaping slashes in paths
+function replace_placeholder() {
+    local key=$1
+    local val=$2
+    local file=$3
+    sed -i "s|{{$key}}|$val|g" "$file"
+}
 
-# 3. Create APP.md from template
-sed -i "s/{{APP_NAME}}/$APP_NAME/g" "$TARGET_DIR/APP.md"
-sed -i "s/{{SUBDOMAIN}}/$SUBDOMAIN/g" "$TARGET_DIR/APP.md"
-sed -i "s/{{INTERNAL_PORT}}/$INTERNAL_PORT/g" "$TARGET_DIR/APP.md"
+# Process docker-compose.yml
+DOCKER_COMPOSE="$TARGET_DIR/docker-compose.yml"
+replace_placeholder "APP_NAME" "$APP_NAME" "$DOCKER_COMPOSE"
+replace_placeholder "SUBDOMAIN" "$SUBDOMAIN" "$DOCKER_COMPOSE"
+replace_placeholder "INTERNAL_PORT" "$INTERNAL_PORT" "$DOCKER_COMPOSE"
 
-# 4. Cleanup/Rename README if necessary
+# Process APP.md
+APP_MD="$TARGET_DIR/APP.md"
+replace_placeholder "APP_NAME" "$APP_NAME" "$APP_MD"
+replace_placeholder "SUBDOMAIN" "$SUBDOMAIN" "$APP_MD"
+replace_placeholder "INTERNAL_PORT" "$INTERNAL_PORT" "$APP_MD"
+replace_placeholder "IMAGE" "PIN_ME_IN_DOCKER_COMPOSE" "$APP_MD"
+
+# 3. Cleanup/Rename README from template
 mv "$TARGET_DIR/README.md" "$TARGET_DIR/ARCH_NOTES.md"
 
-echo "Done! Scaffolding complete in $TARGET_DIR."
-echo "Next steps: Edit $TARGET_DIR/docker-compose.yml to pin your image and add secrets to the Bible repo."
+echo "------------------------------------------------------------"
+echo "✅ Scaffolding complete in $TARGET_DIR"
+echo "------------------------------------------------------------"
+echo "CRITICAL NEXT STEPS:"
+echo "1. Edit $TARGET_DIR/docker-compose.yml and PIN your image tag."
+echo "2. Add bible:vps/$APP_NAME.env to your private Bible repo."
+echo "3. Follow the checklist in docs/PUBLISH_NEW_APP.md"
+echo "------------------------------------------------------------"
