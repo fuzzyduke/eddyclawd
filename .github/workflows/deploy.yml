@@ -3,7 +3,7 @@ name: Deploy to Eddy VPS
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   deploy:
