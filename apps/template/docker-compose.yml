@@ -1,6 +1,6 @@
 services:
-  {{APP_NAME}}:
-    container_name: {{APP_NAME}}-service
+  "{{APP_NAME}}":
+    container_name: "{{APP_NAME}}-service"
     image: nginx:1.27-alpine # Alpine includes wget for healthchecks
     restart: unless-stopped
     env_file: /srv/secrets/{{APP_NAME}}.env
@@ -38,7 +38,7 @@ services:
 
     # 💾 Storage: Use named volumes for persistence
     volumes:
-      - {{APP_NAME}}-data:/usr/share/nginx/html
+      - "{{APP_NAME}}-data:/usr/share/nginx/html"
 
 networks:
   proxy:

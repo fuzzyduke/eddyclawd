@@ -27,15 +27,21 @@ Before starting, define these variables:
 1. Create a **Cloudflare A record**:
    - **Name**: `<SUBDOMAIN>`
    - **Content**: `167.86.84.248`
-   - **Proxy status**: `ON` (Proxied)
+   - **Proxy status**: `ON` (Proxied) by default.
    - **TTL**: `Auto`
+2. **SSL Mode**: Ensure Cloudflare SSL/TLS mode is set to **Full** or **Full (Strict)**. Avoid "Flexible".
+3. **Failover/Debug**: If ACME issuance or routing fails, temporarily set **Proxy status to OFF** to confirm direct VPS routing and certificate validation, then re-enable.
 
 ### Step C: Secrets Management (Private Bible)
 1. Add `<APP_NAME>.env` to the `vps/` directory in the private **bible** repository.
 2. Push changes to the bible repository.
 
 ### Step D: Local Preflight
-Before pushing, verify the following in `apps/<APP_NAME>/docker-compose.yml`:
+Before pushing, run the automated preflight check:
+```bash
+./scripts/preflight_app.sh <APP_NAME>
+```
+Or verify manually in `apps/<APP_NAME>/docker-compose.yml`:
 - [ ] Run `docker compose -f apps/<APP_NAME>/docker-compose.yml config` to check syntax.
 - [ ] Ensure **no** `ports:` key is present (host port exposure is forbidden).
 - [ ] Ensure `image:` is pinned (e.g., `nginx:1.27-alpine`) and not `latest`.
@@ -55,8 +61,14 @@ Before pushing, verify the following in `apps/<APP_NAME>/docker-compose.yml`:
 ## 3. Verification Commands
 
 Run these on the VPS (or via SSH) to confirm success:
-- **Service Registration**: `docker exec traefik wget -qO- http://localhost:8080/api/rawdata | grep <APP_NAME>`
-- **Live Response (Cloudflare)**: `curl -f -I https://<SUBDOMAIN>.<DOMAIN>`
+- **Router Rule Check**:
+  ```bash
+  docker inspect <APP_NAME>-service --format '{{ index .Config.Labels "traefik.http.routers.<APP_NAME>.rule" }}'
+  ```
+- **Network Attachment**:
+  ```bash
+  docker network inspect proxy | grep -E "traefik|<APP_NAME>-service"
+  ```
 - **Cloudflare Bypass (Direct VPS Audit)**:
   ```bash
   curl -sI -k --resolve <SUBDOMAIN>.<DOMAIN>:443:167.86.84.248 https://<SUBDOMAIN>.<DOMAIN> | head -n 1
