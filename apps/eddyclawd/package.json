@@ -1,5 +1,5 @@
 {
-  "name": "eddyclawd",
+  "name": "eddycontabovps",
   "version": "1.0.0",
   "description": "Custom OpenClaw implementation for private VPS hosting",
   "main": "dist/index.js",
